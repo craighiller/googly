@@ -10,6 +10,7 @@ Python implementation by: Roman Stanchak, James Bowman
 """
 import sys
 import cv2.cv as cv
+import cv2
 import time
 # Parameters for haar detection
 # From the API:
@@ -21,10 +22,16 @@ import time
 
 min_size = (2, 2)
 image_scale = 1
-haar_scale = 1.05
+haar_scale = 1.07
 min_neighbors = 5
 haar_flags = 0
-
+def greenish(color):
+    if color[0] < 60:
+        if color[2] < 60:
+            if color[1] > 120:
+                return True
+    return False
+    
 def detect(img, cascade):
     # allocate temporary images
     gray = cv.CreateImage((img.width,img.height), 8, 1)
@@ -47,6 +54,7 @@ def detect(img, cascade):
     return []
 
 if __name__ == '__main__':
+    googlyEye = cv2.imread("eye2.jpg",1)
     for input_name in sys.argv[1:]:
         startTime = time.time()
         image = cv.LoadImage(input_name, 1)
@@ -89,13 +97,28 @@ if __name__ == '__main__':
             # bounding box of each face and convert it to two CvPoints
             pt1 = (int(x * image_scale), int(y * image_scale))
             pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
-            cv.Rectangle(image, pt1, pt2, cv.RGB(255, 0, 0), 3, 8, 0)
+            #cv.Rectangle(image, pt1, pt2, cv.RGB(255, 0, 0), 3, 8, 0)
+            tEye =  cv.CreateImage((w,h), 8, 3)
+            resized = cv2.resize(googlyEye, (w,h))
+            smallEye = cv.fromarray(resized)
+            for i in range(int(x * image_scale), int((x + w) * image_scale)):
+                for j in range(int(y * image_scale), int((y + h) * image_scale)):
+                    if not greenish(smallEye[j-int(y * image_scale), i - int(x * image_scale)]):
+                        image[j,i]=smallEye[j-int(y * image_scale), i - int(x * image_scale)]
+            #image[y:y+h, x:x+w] = smallEye[:,:]
         for x, y, w, h in rightEyes:
             # the input to cv.HaarDetectObjects was resized, so scale the
             # bounding box of each face and convert it to two CvPoints
             pt1 = (int(x * image_scale), int(y * image_scale))
             pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
-            cv.Rectangle(image, pt1, pt2, cv.RGB(0, 255, 0), 3, 8, 0)
+            #cv.Rectangle(image, pt1, pt2, cv.RGB(0, 255, 0), 3, 8, 0)
+            tEye =  cv.CreateImage((w,h), 8, 3)
+            resized = cv2.resize(googlyEye, (w,h), interpolation = cv2.INTER_AREA)
+            smallEye = cv.fromarray(resized)
+            for i in range(int(x * image_scale), int((x + w) * image_scale)):
+                for j in range(int(y * image_scale), int((y + h) * image_scale)):
+                    if not greenish(smallEye[j-int(y * image_scale), i - int(x * image_scale)]):
+                        image[j,i]=smallEye[j-int(y * image_scale), i - int(x * image_scale)]
         if (len(leftEyes) > 0):
             cv.SaveImage(input_name+"_result.jpg", image)        
         print "This image took "+str(time.time()-startTime)+" seconds to process."
