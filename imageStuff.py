@@ -19,10 +19,10 @@ import time
 # scale_factor=1.2, min_neighbors=2, flags=CV_HAAR_DO_CANNY_PRUNING,
 # min_size=<minimum possible face size
 
-min_size = (5, 5)
+min_size = (2, 2)
 image_scale = 1
-haar_scale = 1.2
-min_neighbors = 2
+haar_scale = 1.05
+min_neighbors = 5
 haar_flags = 0
 
 def detect(img, cascade):
@@ -47,56 +47,55 @@ def detect(img, cascade):
     return []
 
 if __name__ == '__main__':
-    input_name = sys.argv[1]
-    startTime = time.time()
-    image = cv.LoadImage(input_name, 1)
-    faces = detect(image, cv.Load("haarcascade_frontalface_default.xml")) # Do facedetection
-    leftEyes = []
-    rightEyes = []
-    for ((x, y, w, h), n) in faces:
-        foundLeft = None
-        foundRight = None
-        tempImage = image[y:y+h, x:x+w]
-        cv.SaveImage("face"+str(n)+".jpg", tempImage)
-        leftEye = detect(tempImage, cv.Load("haarcascade_lefteye_2splits.xml")) # Detect left eye --only--
-        if len(leftEye) == 1:
-            print "LEFT"
-            foundLeft = list(leftEye[0][0])
+    for input_name in sys.argv[1:]:
+        startTime = time.time()
+        image = cv.LoadImage(input_name, 1)
+        faces = detect(image, cv.Load("haarcascade_frontalface_default.xml")) # Do facedetection
+        leftEyes = []
+        rightEyes = []
+        for ((x, y, w, h), n) in faces:
+            foundLeft = None
+            foundRight = None
+            tempImage = image[y:y+h, x:x+w]
+            #cv.SaveImage("face"+str(n)+".jpg", tempImage)
+            leftEye = detect(tempImage, cv.Load("haarcascade_lefteye_2splits.xml")) # Detect left eye --only--
+            if len(leftEye) == 1:
+                #print "LEFT"
+                foundLeft = list(leftEye[0][0])
             
-        rightEye = detect(tempImage, cv.Load("haarcascade_righteye_2splits.xml")) # Detect right eye --only--
-        if len(rightEye) == 1:
-            print "RIGHT"
-            foundRight = list(rightEye[0][0])
+            rightEye = detect(tempImage, cv.Load("haarcascade_righteye_2splits.xml")) # Detect right eye --only--
+            if len(rightEye) == 1:
+                #print "RIGHT"
+                foundRight = list(rightEye[0][0])
                         
-        if ((foundLeft == None) or (foundRight == None)):
-            # If we have the incorrect number of eyes, find eyes on own
-            eyes = detect(tempImage, cv.Load("haarcascade_eye.xml"))
-            if len(eyes) == 2: # people should have 2 eyes
-                print "BOTH"
-                eyes = sorted(eyes, key = lambda x: x[0][0])
-                foundRight = list(eyes[0][0])
-                foundLeft = list(eyes[1][0])
-        # Shift the found coordinates to the full size image
-        if(foundLeft and foundRight):
-            foundLeft[0] += x
-            foundLeft[1] += y
-            foundRight[0] += x
-            foundRight[1] += y
-            leftEyes.append(foundLeft)
-            rightEyes.append(foundRight)
-    print leftEyes
-    for x, y, w, h in leftEyes:
-        # the input to cv.HaarDetectObjects was resized, so scale the
-        # bounding box of each face and convert it to two CvPoints
-        pt1 = (int(x * image_scale), int(y * image_scale))
-        pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
-        cv.Rectangle(image, pt1, pt2, cv.RGB(255, 0, 0), 3, 8, 0)
-    for x, y, w, h in rightEyes:
-        # the input to cv.HaarDetectObjects was resized, so scale the
-        # bounding box of each face and convert it to two CvPoints
-        pt1 = (int(x * image_scale), int(y * image_scale))
-        pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
-        cv.Rectangle(image, pt1, pt2, cv.RGB(0, 255, 0), 3, 8, 0)
-    cv.SaveImage("result.jpg", image)
-    endTime = time.time()
-    print "This image took "+str(endTime-startTime)+" seconds to process."
+            if ((foundLeft == None) or (foundRight == None)):
+                # If we have the incorrect number of eyes, find eyes on own
+                eyes = detect(tempImage, cv.Load("haarcascade_eye.xml"))
+                if len(eyes) == 2: # people should have 2 eyes
+                    #print "BOTH"
+                    eyes = sorted(eyes, key = lambda x: x[0][0])
+                    foundRight = list(eyes[0][0])
+                    foundLeft = list(eyes[1][0])
+            # Shift the found coordinates to the full size image
+            if(foundLeft and foundRight):
+                foundLeft[0] += x
+                foundLeft[1] += y
+                foundRight[0] += x
+                foundRight[1] += y
+                leftEyes.append(foundLeft)
+                rightEyes.append(foundRight)
+        for x, y, w, h in leftEyes:
+            # the input to cv.HaarDetectObjects was resized, so scale the
+            # bounding box of each face and convert it to two CvPoints
+            pt1 = (int(x * image_scale), int(y * image_scale))
+            pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
+            cv.Rectangle(image, pt1, pt2, cv.RGB(255, 0, 0), 3, 8, 0)
+        for x, y, w, h in rightEyes:
+            # the input to cv.HaarDetectObjects was resized, so scale the
+            # bounding box of each face and convert it to two CvPoints
+            pt1 = (int(x * image_scale), int(y * image_scale))
+            pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
+            cv.Rectangle(image, pt1, pt2, cv.RGB(0, 255, 0), 3, 8, 0)
+        if (len(leftEyes) > 0):
+            cv.SaveImage(input_name+"_result.jpg", image)        
+        print "This image took "+str(time.time()-startTime)+" seconds to process."
