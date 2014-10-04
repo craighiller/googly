@@ -25,20 +25,28 @@ def handleRoot(comment):
 	if "imgur.com" not in sub.domain:
 		postFail(comment)
 		return
-	for child in comment.replies:
-		if child.author==r.user:
+	user=r.user
+	replies=comment.replies
+	for child in replies:
+		if str(child.author)==str(user):
 			return
 	imgurUrl=sub.url 
+	if ".png" not in imgurUrl or ".jpg" not in imgurUrl:
+		imgurUrl+=".jpg"
 	newUrl = generateImgur(imgurUrl)
 	postComment(comment, newUrl)
 def handleNode(comment):
 	parent=r.get_info(thing_id=comment.parent_id)
-	for child in parent.replies:
-		if child.author==r.user:
+	user = r.user
+	replies=comment.replies
+	for child in replies:
+		if str(child.author)==str(user):
 			return
 	for word in parent.body.split():
 		if 'imgur.com' in word:
 			word=str(word)
+			if ".png" not in word or ".jpg" not in word:
+				word+=".jpg"
 			newUrl=generateImgur(word)
 			postComment(comment, newUrl)
 def postFail(comment):
