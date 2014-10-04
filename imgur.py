@@ -6,3 +6,6 @@ def generateImgur(url):
 	c="./test.jpg" #CHANGEME!
 	uploaded_image=im.upload_image(c, title="You've Been Goog'd")
 	return uploaded_image.link
+def postImgur(image):
+	uploaded_image=im.upload_image(image, title="You've Been Goog'd")
+	return uploaded_image.link
