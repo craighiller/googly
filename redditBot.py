@@ -46,7 +46,7 @@ def handleNode(comment):
 		if 'imgur.com' in word:
 			word=str(word)
 			if ".png" not in word or ".jpg" not in word:
-			word+=".jpg"
+				word+=".jpg"
 			newUrl=generateImgur(word)
 			postComment(comment, newUrl)
 def postFail(comment):
