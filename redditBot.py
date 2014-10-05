@@ -32,13 +32,32 @@ login()
 myName=r.user
 def scanSubreddit(subName):
 	subreddit=r.get_subreddit(subName)
-	for submission in subreddit.get_new(limit=30):
+	iterator = subreddit.get_hot(limit=30)
+	counter=0
+	iterator.next()
+	for submission in iterator:
 		newUrl=submission.url
+	#	counter+=1
+	#	if counter==4:
+	#		counter = 0
 		print submission
 		if ".png" in newUrl or ".jpg" in newUrl:
+			alreadyPosted=False
+			#for comment in submission.comments:
+			#	print comment.author
+			#	if comment.author == myName:
+			#		print "already posted"
+			#		alreadyPosted=True
+			#		break
+			if alreadyPosted:
+				continue
 			newUrl=generateImgur(newUrl)
 			if newUrl:
 				postComment(submission, newUrl)
+				print "sleeping"
+				time.sleep(30)
+				print "wokeup"
+
 #def handleRoot(comment):
 #	sub=r.get_info(thing_id=comment.parent_id)
 #	if "imgur.com" not in sub.domain:
@@ -71,12 +90,9 @@ def scanSubreddit(subName):
 #			postComment(comment, newUrl)
 def postFail(comment):
 	pass
+
 def postComment(sub, url):
 	print "hi"
-	for comment in sub.comments:
-		if comment.author == myName:
-			print "already posted"
-			return
-	sub.add_comment("You've been Goog'd! \n\n"+url)
+	sub.add_comment("You've been Goog'd! \n\n"+url+"\n\n\n\nNote this bot is in development.  We'd love it if you messaged us with any feedback!")
 	print "posted!"
 	#main()
