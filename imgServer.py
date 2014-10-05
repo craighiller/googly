@@ -48,7 +48,7 @@ def googImage():
 def main():
     return """<html>
     <body>
-    <form action="http://0.0.0.0:8080/googlyifyImage"
+    <form action="/googlyifyImage"
     enctype="multipart/form-data" method="post">
     <p>
     <input type="file" name="image">
@@ -59,4 +59,4 @@ def main():
     </form>
     </body>
     </hmtl>"""
-run(host='0.0.0.0', port=8080, server="cherrypy")
+run(host='0.0.0.0', port=80, server="tornado")
