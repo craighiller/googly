@@ -20,7 +20,7 @@ def error500(error):
 ## Yeah - we don't verify anything    
 @route('/googlyifyURL')
 def googURL():
-    redirect("ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyURL")
+    redirect("http://ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyURL")
     # url = str(request.query.get('url'))
     #  # download image from URL
     #  # pretty bad code - oh well
@@ -34,7 +34,7 @@ def googURL():
     #  return "Sorry, we could not process that image"
 @post('/googlyifyImage')
 def googImage():
-    redirect("ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyImage")
+    redirect("http://ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyImage")
     
     # print "hi"
     #   # thanks to http://stackoverflow.com/a/17134909
@@ -85,7 +85,7 @@ def main():
 
     		<header>GoogMe</header>
     		<nav>
-    			<form id="myform" action="ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyImage"
+    			<form id="myform" action="http://ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyImage"
     			enctype="multipart/form-data" method="post" onsubmit="return validate(this);" target="after">
     				<p>
     					Please specify a file, or a set of files:<br>
