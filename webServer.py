@@ -6,7 +6,7 @@ package_dir = "packages"
 package_dir_path = os.path.join(os.path.dirname(__file__), package_dir)
 sys.path.insert(0, package_dir_path)
 
-from bottle import get, route, run, post, static_file, error, request
+from bottle import get, route, run, post, static_file, error, request, redirect
 import urllib
 import uuid
 import imageStuff
