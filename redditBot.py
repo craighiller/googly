@@ -32,7 +32,7 @@ login()
 myName=r.user
 def scanSubreddit(subName):
 	subreddit=r.get_subreddit(subName)
-	iterator = subreddit.get_hot(limit=30)
+	iterator = subreddit.get_new(limit=400)
 	counter=0
 	iterator.next()
 	for submission in iterator:
@@ -43,12 +43,12 @@ def scanSubreddit(subName):
 		print submission
 		if ".png" in newUrl or ".jpg" in newUrl:
 			alreadyPosted=False
-			#for comment in submission.comments:
-			#	print comment.author
-			#	if comment.author == myName:
-			#		print "already posted"
-			#		alreadyPosted=True
-			#		break
+			for comment in submission.comments:
+				print comment.author
+				if comment.author == myName:
+					print "already posted"
+					alreadyPosted=True
+					break
 			if alreadyPosted:
 				continue
 			newUrl=generateImgur(newUrl)
