@@ -46,6 +46,17 @@ def googImage():
     return "Sorry, we could not process that image"
 @route('/')
 def main():
-    return "Add googly eyes to an image! Usage is /googlyifyURL?url=<url> or /googlyifyImage?image=<image upload> both of these respond to POST requests."
-
+    return """<html>
+    <body>
+    <form action="http://0.0.0.0:8080/googlyifyImage"
+    enctype="multipart/form-data" method="post">
+    <p>
+    <input type="file" name="image">
+    </p>
+    <div>
+    <input type="submit" value="Send">
+    </div>
+    </form>
+    </body>
+    </hmtl>"""
 run(host='0.0.0.0', port=8080, server="cherrypy")
