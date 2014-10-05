@@ -20,8 +20,10 @@ def error500(error):
 ## Yeah - we don't verify anything    
 @route('/googlyifyURL')
 def googURL():
-    redirect("http://ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyURL")
-    # url = str(request.query.get('url'))
+    url = str(request.query.get('url'))
+    
+    redirect("http://ec2-54-68-15-222.us-west-2.compute.amazonaws.com/googlyifyURL?url="+url)
+    url = str(request.query.get('url'))
     #  # download image from URL
     #  # pretty bad code - oh well
     #  url_filename = url.split("/")[-1]
