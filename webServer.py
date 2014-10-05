@@ -47,6 +47,11 @@ def googImage():
     #   if imageStuff.googlyify(im_uuid+name):
     #       return static_file(im_uuid+name+"_result.jpg", root=".")
     #   return "Sorry, we could not process that image"
+    
+@route('/static/<path:path>')
+def callback(path):
+    return static_file(path, root="static")
+    
 @route('/')
 def main():
     return """<!DOCTYPE HTML>
@@ -59,7 +64,7 @@ def main():
     		<meta charset="utf-8" />
             <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
             <title>GooglyBot</title>
-            <link rel="stylesheet" type="text/css" href="style.css">
+            <link rel="stylesheet" type="text/css" href="static/style.css">
     	</head>
 
     	<body>
