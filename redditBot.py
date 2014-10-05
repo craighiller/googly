@@ -90,6 +90,7 @@ def scanSubreddit(subName):
 #			postComment(comment, newUrl)
 def postFail(comment):
 	pass
+scanSubreddit('faces')
 
 def postComment(sub, url):
 	print "hi"
