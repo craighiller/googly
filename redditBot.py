@@ -90,10 +90,11 @@ def scanSubreddit(subName):
 #			postComment(comment, newUrl)
 def postFail(comment):
 	pass
-scanSubreddit('faces')
+
 
 def postComment(sub, url):
 	print "hi"
 	sub.add_comment("You've been Goog'd! \n\n"+url+"\n\n\n\nNote this bot is in development.  We'd love it if you messaged us with any feedback!")
 	print "posted!"
 	#main()
+scanSubreddit('faces')
